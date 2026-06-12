@@ -1,0 +1,47 @@
+# GitHub Actions 版本 — 使用国际源
+FROM python:3.12-slim
+
+ENV TZ=Asia/Shanghai
+
+WORKDIR /app
+
+# 安装系统依赖、中文字体和 Node.js
+RUN apt-get update && apt-get install -y \
+    curl \
+    gnupg \
+    fonts-noto-cjk \
+    fonts-wqy-zenhei \
+    fonts-wqy-microhei \
+    fontconfig \
+    tzdata \
+    && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime \
+    && echo $TZ > /etc/timezone \
+    && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs \
+    && fc-cache -fv \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# 验证安装
+RUN node --version && npm --version
+
+# 复制依赖文件
+COPY requirements.txt .
+
+# 安装 Python 依赖（使用官方 PyPI 源）
+RUN pip install --no-cache-dir -r requirements.txt
+
+# 复制项目文件
+COPY . .
+
+# 创建必要的目录
+RUN mkdir -p /app/data && chmod 777 /app/data
+
+# 暴露 Streamlit 默认端口
+EXPOSE 8501
+
+# 设置健康检查
+HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health || exit 1
+
+# 启动应用
+CMD ["python", "run.py"]
