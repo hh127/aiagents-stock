@@ -13,9 +13,13 @@ import pandas as pd
 class MainForceBatchDatabase:
     """主力选股批量分析历史数据库管理类"""
     
-    def __init__(self, db_path: str = "main_force_batch.db"):
+    def __init__(self, db_path: str = "data/main_force_batch.db"):
         """初始化数据库连接"""
         self.db_path = db_path
+        import os
+        db_dir = os.path.dirname(self.db_path)
+        if db_dir and not os.path.exists(db_dir):
+            os.makedirs(db_dir, exist_ok=True)
         self._init_database()
     
     def _init_database(self):

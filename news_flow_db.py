@@ -17,8 +17,12 @@ logger = logging.getLogger(__name__)
 class NewsFlowDatabase:
     """新闻流量数据库管理类"""
     
-    def __init__(self, db_path: str = "news_flow.db"):
+    def __init__(self, db_path: str = "data/news_flow.db"):
         self.db_path = db_path
+        import os
+        db_dir = os.path.dirname(self.db_path)
+        if db_dir and not os.path.exists(db_dir):
+            os.makedirs(db_dir, exist_ok=True)
         self.init_database()
     
     def get_connection(self):

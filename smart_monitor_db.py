@@ -13,7 +13,7 @@ import json
 class SmartMonitorDB:
     """智能盯盘数据库"""
     
-    def __init__(self, db_file: str = 'smart_monitor.db'):
+    def __init__(self, db_file: str = 'data/smart_monitor.db'):
         """
         初始化数据库
         
@@ -22,6 +22,10 @@ class SmartMonitorDB:
         """
         self.db_file = db_file
         self.logger = logging.getLogger(__name__)
+        import os
+        db_dir = os.path.dirname(self.db_file)
+        if db_dir and not os.path.exists(db_dir):
+            os.makedirs(db_dir, exist_ok=True)
         self._init_database()
     
     def _init_database(self):

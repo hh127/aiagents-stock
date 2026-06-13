@@ -15,7 +15,7 @@ import os
 class ProfitGrowthMonitor:
     """净利增长策略监控数据库管理"""
     
-    def __init__(self, db_path: str = "profit_growth_monitor.db"):
+    def __init__(self, db_path: str = "data/profit_growth_monitor.db"):
         """
         初始化监控数据库
         
@@ -24,6 +24,9 @@ class ProfitGrowthMonitor:
         """
         self.db_path = db_path
         self.logger = logging.getLogger(__name__)
+        db_dir = os.path.dirname(self.db_path)
+        if db_dir and not os.path.exists(db_dir):
+            os.makedirs(db_dir, exist_ok=True)
         self._init_database()
     
     def _init_database(self):
